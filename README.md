@@ -1,2 +1,2 @@
 # comps
-The master repository for all of my coding-competition-related solutions. :) 
+Here are my solutions, I guess :/
