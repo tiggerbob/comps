@@ -1,0 +1,105 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+        int N = Integer.parseInt(f.readLine());
+        String[] direction = new String[N];
+        int[] xCoord = new int[N];
+        int[] yCoord = new int[N];
+        for (int i = 0; i < N; i++) {
+            StringTokenizer st = new StringTokenizer(f.readLine());
+            direction[i] = st.nextToken();
+            xCoord[i] = Integer.parseInt(st.nextToken());
+            yCoord[i] = Integer.parseInt(st.nextToken());
+        }
+
+        List<List<int[]>> results = new ArrayList<List<int[]>>();
+        for (int a = 0; a < N; a++) {
+            boolean found = false;
+            // all possible intersections, regardless of length (sort later)
+            List<int[]> possiblePoints = new ArrayList<int[]>();
+            if (direction[a].equals("N")) {
+                for (int b = 0; b < N; b++) {
+                    if (direction[b].equals("N")) {
+                        if ((yCoord[b] > yCoord[a]) && (xCoord[b] == xCoord[a])) {
+                            found = true;
+                            possiblePoints.add(new int[]{yCoord[b] - yCoord[a], b});
+                        }
+                    } else {
+                        if (xCoord[b] <= xCoord[a]) {
+                            if (yCoord[b] > yCoord[a]) {
+                                if ((xCoord[a] - xCoord[b]) < (yCoord[b] - yCoord[a])) {
+                                    possiblePoints.add(new int[]{yCoord[b] - yCoord[a], b});
+                                    found = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (int b = 0; b < N; b++) {
+                    if (direction[b].equals("E")) {
+                        if ((xCoord[b] > xCoord[a]) && (yCoord[b] == yCoord[a])) {
+                            found = true;
+                            possiblePoints.add(new int[]{xCoord[b] - xCoord[a], b});
+                        }
+                    } else {
+                        if (yCoord[a] >= yCoord[b]) {
+                            if (xCoord[b] > xCoord[a]) {
+                                if ((yCoord[a] - yCoord[b]) < (xCoord[b] - xCoord[a])) {
+                                    possiblePoints.add(new int[]{xCoord[b] - xCoord[a], b});
+                                    found = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(!found) {
+                possiblePoints.add(new int[]{-1, -1});
+            }
+            results.add(possiblePoints);
+        }
+
+        // parse through all possible points
+        for(int i = 0; i < N; i++) {
+            if(results.get(i).get(0)[0] != -1) {
+                results.get(i).sort(Comparator.comparingInt(o -> o[0]));
+
+                for(int j = 0; j < results.get(i).size(); j++) {
+                    if(results.get(results.get(i).get(j)[1]).get(0)[0] != -1) {
+                        if(results.get(i).get(j)[0] > results.get(results.get(i).get(j)[1]).get(0)[0]) {
+                            if(results.get(i).size() == 1) {
+                                results.get(i).add(new int[]{-1, -1});
+                                results.get(i).remove(0);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        // debug, see all possible points
+        /*for(int i = 0; i < N; i++) {
+            for (int[] arr :
+                    results.get(i)) {
+                pw.print(Arrays.toString(arr) + " ");
+            }
+            pw.println("");
+        }*/
+
+        // make sure each arraylist inside outer results list only has one int by end
+        for(int i = 0; i < N; i++) {
+            if(results.get(i).get(0)[0] != -1) {
+                pw.println(results.get(i).get(0)[0]);
+            } else {
+                pw.println("Infinity");
+            }
+        }
+        pw.close();
+    }
+}
