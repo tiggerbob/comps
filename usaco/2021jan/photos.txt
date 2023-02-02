@@ -1,0 +1,58 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    private static int count = 0;
+    public static void main(String[] args) throws IOException{
+        BufferedReader f = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(System.out);
+        int N = Integer.parseInt(f.readLine());
+        StringTokenizer s = new StringTokenizer(f.readLine());
+        int[] ids = new int[N];
+        List<Integer> odds = new ArrayList<Integer>();
+        List<Integer> evens = new ArrayList<Integer>();
+        for(int i = 0; i < N; i++) {
+            ids[i] = Integer.parseInt(s.nextToken());
+            if(ids[i] % 2 == 0) {
+                evens.add(ids[i]);
+            } else {
+                odds.add(ids[i]);
+            }
+        }
+
+        pw.println(search(odds, evens));
+        pw.close();
+    }
+
+    private static int search(List<Integer> odds, List<Integer> evens) {
+        if(evens.size() > 0) {
+            count++;
+            evens.remove(0);
+            if(odds.size() > 0) {
+                count++;
+                odds.remove(0);
+                return search(odds, evens);
+            } else {
+                return count;
+            }
+        } else {
+            if(odds.size() >= 2) {
+                count++;
+                odds.remove(0);
+                odds.remove(0);
+                if(odds.size() > 2) {
+                    count++;
+                    odds.remove(0);
+                    return search(odds, evens);
+                } else {
+                    if(odds.size() == 1) {
+                        count++;
+                    }
+                    return count;
+                }
+            } else {
+                return count;
+            }
+        }
+    }
+}
